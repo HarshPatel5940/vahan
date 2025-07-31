@@ -1,8 +1,9 @@
 # Vahan Email Platform - Complete Implementation Checklist
 
 ## what is it?
-```
-so i am planning a build a platform tool where users can provide their AWS keys and we will setup the whole SES based mailing and give mailboxes/inboxes like user1@example.com to some users using existing mail servers or services AWS provides... its called "vahan" and i am planning to build using aws sdk (typescript) and nuxt framework... first i need you to ideate how you are gonna make an mailer + mail box provider functionality for the whole system, this includes starting verification of the users custom domain and from there more! It needs to be simple, cost, effective system managing / orchastrating everything using users aws keys... we also need to save everything securely ... prbly encrypted...
+
+```text
+so i am planning a build a platform tool where users can provide their AWS keys...
 ```
 
 ## Phase 1: Core Infrastructure & Security
@@ -61,7 +62,7 @@ so i am planning a build a platform tool where users can provide their AWS keys 
 - [ ] Add sending statistics and analytics tracking
 
 ### Mailbox Creation & Management
-- [ ] Design mailbox provisioning system (user@customdomain.com)
+- [ ] Design mailbox provisioning system (`user@customdomain.com`)
 - [ ] Implement mailbox aliases and forwarding rules
 - [ ] Create mailbox quota management system
 - [ ] Build mailbox deletion and archiving processes

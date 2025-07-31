@@ -41,8 +41,12 @@ CREATE TABLE user_aws_credentials (
   encrypted_secret_key TEXT NOT NULL,
   encrypted_session_token TEXT,
   region VARCHAR(50) DEFAULT 'us-east-1',
-  iv BYTEA NOT NULL, -- Initialization vector for encryption
-  tag BYTEA NOT NULL, -- Authentication tag for GCM mode
+  access_key_iv BYTEA NOT NULL, -- IV for access key encryption
+  secret_key_iv BYTEA NOT NULL, -- IV for secret key encryption
+  session_token_iv BYTEA, -- IV for session token encryption
+  access_key_tag BYTEA NOT NULL, -- Auth tag for access key
+  secret_key_tag BYTEA NOT NULL, -- Auth tag for secret key
+  session_token_tag BYTEA, -- Auth tag for session token
   credentials_valid BOOLEAN DEFAULT FALSE,
   last_validated TIMESTAMP,
   created_at TIMESTAMP DEFAULT NOW(),
@@ -70,7 +74,7 @@ CREATE TABLE domains (
   verification_status VARCHAR(50) DEFAULT 'pending' CHECK (verification_status IN ('pending', 'verified', 'failed', 'expired')),
   ses_identity_arn VARCHAR(500),
   verification_token VARCHAR(255),
-  dkim_tokens TEXT[], -- Array of DKIM tokens from SES
+  dkim_tokens JSON, -- DKIM tokens from SES stored as JSON
   dns_records_generated BOOLEAN DEFAULT FALSE,
   verification_attempts INTEGER DEFAULT 0,
   last_verification_attempt TIMESTAMP,

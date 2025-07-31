@@ -338,7 +338,7 @@ export class DomainService {
             userId,
             domainName,
             sesResult.verificationToken,
-            sesResult.dkimTokens,
+            JSON.stringify(sesResult.dkimTokens || []),
             "pending",
           ]
         );

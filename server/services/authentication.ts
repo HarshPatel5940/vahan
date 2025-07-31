@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import validator from "validator";
 import { encryptionService } from "../utils/encryption";
+
 import {
   database,
   findUserByEmail,

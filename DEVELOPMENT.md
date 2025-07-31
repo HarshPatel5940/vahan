@@ -43,7 +43,7 @@ JWT_SECRET=your-jwt-secret-key-here
 # Application Configuration
 APP_URL=http://localhost:3000
 APP_ENV=development
-```
+```env
 
 ### 4. Database Setup
 
@@ -52,9 +52,11 @@ Create the PostgreSQL database:
 ```sql
 -- Connect to PostgreSQL as superuser
 CREATE DATABASE vahan_db;
+```sql
 CREATE USER vahan_user WITH PASSWORD 'your_secure_password';
 GRANT ALL PRIVILEGES ON DATABASE vahan_db TO vahan_user;
 ALTER USER vahan_user CREATEDB; -- Allow user to create test databases
+```
 ```
 
 Run the database migration:
@@ -69,13 +71,13 @@ bun run db:migrate
 bun run dev
 ```
 
-Visit http://localhost:3000 to see the application.
+Visit [http://localhost:3000](http://localhost:3000) to see the application.
 
 ## Development Workflow
 
 ### Project Structure Overview
 
-```
+```text
 vahan/
 ├── app/                    # Frontend (Nuxt.js app)
 │   ├── components/         # Reusable Vue components
@@ -91,7 +93,7 @@ vahan/
 ├── database/              # Database schemas and migrations
 │   └── schema.sql         # Main database schema
 └── scripts/               # Development and deployment scripts
-```
+```text
 
 ### Key Services Implemented
 
@@ -137,7 +139,7 @@ bun run db:reset         # Reset database (drop all tables)
 # Code Quality
 bun run lint             # Run ESLint
 bun run lint:fix         # Fix ESLint issues automatically
-```
+```bash
 
 ### Testing the Implementation
 

@@ -88,7 +88,7 @@ A professional email infrastructure platform powered by AWS SES. Set up custom d
 
 ## Project Structure
 
-```
+```text
 vahan/
 ├── app/                    # Frontend application
 │   ├── components/         # Vue components
@@ -103,11 +103,11 @@ vahan/
 ├── database/              # Database schemas and migrations
 ├── scripts/               # Database and utility scripts
 └── docs/                  # Documentation
-```
+```text
 
 ## Phase 1: Core Infrastructure & Security ✅
 
-### Completed Features:
+### Completed Features
 - [x] **AWS Credentials Management**
   - Secure AES-256 encryption for credentials storage
   - Credential validation with AWS STS and SES
@@ -127,7 +127,7 @@ vahan/
 
 ## Phase 2: Domain Management & Verification ✅
 
-### Completed Features:
+### Completed Features
 - [x] **Domain Setup & Verification**
   - Domain registration interface
   - AWS SES domain identity creation
@@ -268,4 +268,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-For support, email support@vahan.email or open an issue on GitHub.
+For support, email [support@vahan.email](mailto:support@vahan.email) or open an issue on GitHub.

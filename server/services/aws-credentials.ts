@@ -33,8 +33,12 @@ export interface StoredCredentials {
   encrypted_secret_key: string;
   encrypted_session_token?: string;
   region: string;
-  iv: string;
-  tag: string;
+  access_key_iv: string;
+  secret_key_iv: string;
+  session_token_iv?: string;
+  access_key_tag: string;
+  secret_key_tag: string;
+  session_token_tag?: string;
   credentials_valid: boolean;
   last_validated?: Date;
   created_at: Date;
@@ -152,17 +156,23 @@ export class AWSCredentialsService {
         // Insert new credentials
         const insertResult = await client.query<StoredCredentials>(
           `INSERT INTO user_aws_credentials 
-           (user_id, encrypted_access_key, encrypted_secret_key, encrypted_session_token, region, iv, tag, credentials_valid, last_validated) 
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW()) 
+           (user_id, encrypted_access_key, encrypted_secret_key, encrypted_session_token, region, 
+            access_key_iv, secret_key_iv, session_token_iv, access_key_tag, secret_key_tag, session_token_tag, 
+            credentials_valid, last_validated) 
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, NOW()) 
            RETURNING *`,
           [
             userId,
-            encryptedAccessKey.encrypted,
-            encryptedSecretKey.encrypted,
-            encryptedSessionToken?.encrypted,
+            encryptedAccessKey.encryptedData,
+            encryptedSecretKey.encryptedData,
+            encryptedSessionToken?.encryptedData,
             credentials.region,
             encryptedAccessKey.iv,
-            encryptedAccessKey.tag, // Using the same tag for all (they should be the same since we use same IV)
+            encryptedSecretKey.iv,
+            encryptedSessionToken?.iv,
+            encryptedAccessKey.tag,
+            encryptedSecretKey.tag,
+            encryptedSessionToken?.tag,
             validationResult.valid,
           ]
         );
@@ -226,26 +236,29 @@ export class AWSCredentialsService {
 
       const stored = result.rows[0];
 
-      // Decrypt the credentials
+      // Decrypt the credentials using separate IVs and tags for each field
       const accessKeyId = encryptionService.decrypt({
-        encrypted: stored.encrypted_access_key,
-        iv: stored.iv,
-        tag: stored.tag,
+        encryptedData: stored.encrypted_access_key,
+        iv: stored.access_key_iv,
+        tag: stored.access_key_tag,
       });
 
       const secretAccessKey = encryptionService.decrypt({
-        encrypted: stored.encrypted_secret_key,
-        iv: stored.iv,
-        tag: stored.tag,
+        encryptedData: stored.encrypted_secret_key,
+        iv: stored.secret_key_iv,
+        tag: stored.secret_key_tag,
       });
 
-      const sessionToken = stored.encrypted_session_token
-        ? encryptionService.decrypt({
-            encrypted: stored.encrypted_session_token,
-            iv: stored.iv,
-            tag: stored.tag,
-          })
-        : undefined;
+      const sessionToken =
+        stored.encrypted_session_token &&
+        stored.session_token_iv &&
+        stored.session_token_tag
+          ? encryptionService.decrypt({
+              encryptedData: stored.encrypted_session_token,
+              iv: stored.session_token_iv,
+              tag: stored.session_token_tag,
+            })
+          : undefined;
 
       // Log credential access
       await this.logCredentialAction(
@@ -311,16 +324,23 @@ export class AWSCredentialsService {
       const result = await database.query<StoredCredentials>(
         `UPDATE user_aws_credentials 
          SET encrypted_access_key = $2, encrypted_secret_key = $3, encrypted_session_token = $4, 
-             region = $5, iv = $6, credentials_valid = $7, last_validated = NOW(), updated_at = NOW()
+             region = $5, access_key_iv = $6, secret_key_iv = $7, session_token_iv = $8,
+             access_key_tag = $9, secret_key_tag = $10, session_token_tag = $11,
+             credentials_valid = $12, last_validated = NOW(), updated_at = NOW()
          WHERE user_id = $1 
          RETURNING *`,
         [
           userId,
-          encryptedAccessKey.encrypted,
-          encryptedSecretKey.encrypted,
-          encryptedSessionToken?.encrypted,
+          encryptedAccessKey.encryptedData,
+          encryptedSecretKey.encryptedData,
+          encryptedSessionToken?.encryptedData,
           credentials.region,
           encryptedAccessKey.iv,
+          encryptedSecretKey.iv,
+          encryptedSessionToken?.iv,
+          encryptedAccessKey.tag,
+          encryptedSecretKey.tag,
+          encryptedSessionToken?.tag,
           validationResult.valid,
         ]
       );

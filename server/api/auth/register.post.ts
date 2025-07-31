@@ -53,8 +53,8 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event);
     const validatedData = registerSchema.parse(body);
 
-    const clientIp = getClientIP(event) || "unknown";
-    const userAgent = getHeader(event, "user-agent") || "unknown";
+    const clientIp = getClientIP(event) || "127.0.0.1";
+    const userAgent = getHeader(event, "user-agent") || "not-provided";
 
     const result = await authenticationService.register(
       validatedData,
