@@ -24,6 +24,9 @@ export class EncryptionService {
     if (!process.env.ENCRYPTION_KEY) {
       throw new Error("ENCRYPTION_KEY environment variable is required");
     }
+    if (!process.env.ENCRYPTION_SALT) {
+      throw new Error("ENCRYPTION_SALT environment variable is required");
+    }
   }
 
   /**
@@ -31,11 +34,8 @@ export class EncryptionService {
    */
   private getEncryptionKey(): Buffer {
     const key = process.env.ENCRYPTION_KEY!;
-    return crypto.scryptSync(
-      key,
-      process.env.ENCRYPTION_SALT || "salt",
-      this.keyLength
-    );
+    const salt = process.env.ENCRYPTION_SALT!;
+    return crypto.scryptSync(key, salt, this.keyLength);
   }
 
   /**

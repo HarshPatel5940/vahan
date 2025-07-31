@@ -38,6 +38,7 @@ DB_PASSWORD=your_secure_password
 
 # Encryption Configuration (generate secure keys)
 ENCRYPTION_KEY=your-32-character-encryption-key-here
+ENCRYPTION_SALT=your-32-character-encryption-salt-here
 JWT_SECRET=your-jwt-secret-key-here
 
 # Application Configuration
